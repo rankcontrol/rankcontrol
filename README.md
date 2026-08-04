@@ -31,4 +31,4 @@ by default and require `--confirm`. Approval gates run server-side.
 - Docs: [rctrl.com/docs](https://rctrl.com/docs)
 - npm: [rankcontrol](https://www.npmjs.com/package/rankcontrol) (CLI + MCP server in one package)
 - X: [@rctrlcom](https://x.com/rctrlcom)
-- Support: help@rctrl.com
+- Support: [rctrl.com/contact](https://rctrl.com/contact)
