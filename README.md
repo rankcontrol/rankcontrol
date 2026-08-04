@@ -6,7 +6,7 @@ a RankControl workspace from the command line: AI visibility, content
 planning and publishing, leads, backlinks, repurposing, and reports.
 
 ```bash
-npx skills add r-sri-ram/rankcontrol
+npx skills add rankcontrol/rankcontrol
 ```
 
 Prefer MCP? The same package is an MCP server:
