@@ -233,8 +233,8 @@ rankcontrol publish <contentId>            # dry run: previews what would go liv
 rankcontrol publish <contentId> --confirm
 ```
 
-Dry-run responses come back as `{"dryRun":true,...}` with a hint phrased for
-the REST API (`confirm: true`); in the CLI that means add `--confirm`.
+Dry-run responses come back as `{"dryRun":true,...}` with a hint naming both
+forms: `confirm: true` for the API and MCP, `--confirm` for the CLI.
 
 **Repurpose a published article to social drafts:**
 
