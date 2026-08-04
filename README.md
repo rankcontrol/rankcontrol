@@ -3,7 +3,9 @@
 [RankControl](https://rctrl.com) wins Google rankings and AI citations for your
 site: seven AI agents plan, write, and publish citation-optimized articles as
 native posts on your own CMS (WordPress, Webflow, Shopify, Ghost, Notion, Wix,
-Framer, and headless), then track citations, rankings, backlinks, and leads.
+Framer, and headless). They watch citations and rankings, refresh pages that
+slip, draft link outreach for your approval, and capture intent-scored leads
+from Google and AI answers.
 
 This repo is the RankControl **agent skill**. It teaches Claude Code, Cursor,
 Codex, and any [skills](https://skills.sh)-compatible agent how to run a
