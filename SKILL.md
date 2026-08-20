@@ -1,6 +1,6 @@
 ---
 name: rankcontrol
-description: Operate the user's RankControl workspace (rctrl.com) from the command line - AI search visibility and citations (ChatGPT, Perplexity, Claude, Gemini, Google AI Mode), SEO content planning, article generation and publishing to their CMS, leads, backlinks and outreach, social repurposing, brand memory, and reports. Use this whenever the user asks about AI visibility, AI citations, GEO/AEO, being cited by ChatGPT, their content calendar, publishing articles, lead attribution from AI search, or anything in their RankControl account, even if they don't name RankControl explicitly.
+description: Operate the user's RankControl workspace (rctrl.com) from the command line - AI search visibility and citations (ChatGPT, Perplexity, Claude, Gemini, Grok, Google AI Mode), SEO content planning, article generation and publishing to their CMS, leads, backlinks and outreach, social repurposing, brand memory, and reports. Use this whenever the user asks about AI visibility, AI citations, GEO/AEO, being cited by ChatGPT, their content calendar, publishing articles, lead attribution from AI search, or anything in their RankControl account, even if they don't name RankControl explicitly.
 homepage: https://rctrl.com/docs
 metadata: {"openclaw":{"emoji":"📈","requires":{"bins":[],"env":[]}}}
 ---
@@ -83,7 +83,7 @@ rankcontrol visibility --days 30            # watch the trend
 
 | Command | What it does |
 | --- | --- |
-| `login` | Browser device authorization; saves a scoped key to `~/.rankcontrol`. `--scopes a,b,c` to narrow. |
+| `login` | Browser device authorization; saves a key to `~/.rankcontrol`. Scoped/read-only keys are created in the dashboard instead. |
 | `logout` | Remove the locally stored key. |
 | `mcp` | Start the MCP server on stdio (same tools, for MCP clients). |
 
@@ -96,7 +96,7 @@ rankcontrol visibility --days 30            # watch the trend
 | `wins` | Biggest wins: most-cited page, cite-rate jump, ranking climb, best backlink. |
 | `agent-activity` | Recent runs per agent lane. `--per-agent <n>`, `--since-days <n>`. |
 | `jobs` | Recent agent runs and async job status. `--limit <n>`. |
-| `traffic` | Page views, visitors, sessions, bounce rate. `--days 7\|30\|90`. |
+| `traffic` | Page views, visitors, sessions, bounce rate. `--days <n>`. |
 | `leads` | Captured leads with AI source attribution. `--limit <n>`. |
 | `engagement` | Per-page views and citations with 30-day sparklines. |
 
@@ -109,9 +109,15 @@ rankcontrol visibility --days 30            # watch the trend
 | `sov` | Share of voice vs competitors. `--days <n>`. |
 | `sources` | Domains AI answers cite for tracked queries. `--days <n>`. |
 | `sentiment` | How AI answers frame the brand when cited. `--days <n>`. |
-| `citations` | Recent citation checks. `--model chatgpt\|perplexity\|claude\|gemini\|qwen\|google_ai_mode`, `--limit <n>`. |
+| `citations` | Recent citation checks. `--model chatgpt\|perplexity\|claude\|gemini\|grok\|google_ai_mode`, `--limit <n>`. |
 | `queries` | The tracked-query pool checked weekly across AI engines. |
 | `query-add <queryText>` | Add a query to the pool. |
+| `query-edit <queryId> <text>` | Rewrite a tracked query; future checks use the new text. |
+| `query-track <queryId> <on\|off>` | Pause or resume weekly checks; tracking consumes a plan slot. |
+| `query-remove <queryId>` | Delete a query from the pool. |
+| `competitors` | Tracked competitors used in share-of-voice comparisons. |
+| `competitor-add <name> <url>` | Track a competitor (max 10). |
+| `competitor-remove <competitorId>` | Stop tracking a competitor. |
 | `crawler-access` | Is the site's edge or robots.txt blocking GPTBot and ClaudeBot. |
 
 ### Content
@@ -132,7 +138,10 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `generate <contentId>` | Write a planned article's body. **Dry run**; spends LLM budget on `--confirm`. |
 | `publish <contentId>` | Publish to the connected CMS. **Dry run** until `--confirm`. |
 | `reschedule <contentId> <date>` | Move a planned article to a day (`YYYY-MM-DD`). |
+| `delete-planned <contentId>` | Remove a planned title; it returns to the idea pool. |
 | `archive <contentId>` | Archive an article out of the working set. |
+| `topics` | The pillar list (topic clusters) ideas and articles group under. |
+| `topics-set <topics...>` | Replace the FULL pillar list; read `topics` first and send every topic that should exist. |
 | `optimizer` | Published pages ranked by citability, worst first, with open fixes. |
 | `internal-links <contentId>` | Inbound and outbound internal links for an article. |
 
@@ -191,6 +200,7 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | Command | What it does |
 | --- | --- |
 | `brand` | Brand profile, products, and buyer profiles in one read. |
+| `brand-set` | Update identity: `--name`, `--industry`, `--description`, or `--json` for authors (EEAT bylines) and styleReferenceUrls (arrays replace the stored list). |
 | `brand-profile-set` | Patch voice and style fields. `--json '{"tone":"..."}'` or `--json @file.json`. |
 | `brand-product` | Create, update, or delete a product via `--json` (create: name, description, category; update: productId; delete: productId plus `"del": true`). |
 | `brand-icp` | Same semantics for buyer profiles (create: title, industry, demographics). |
@@ -203,6 +213,21 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `team-invite <email>` | Invite a member. **Dry run**; `--perms content=write,analytics=read`. |
 | `team-revoke <invitationId>` | Revoke a pending invite. |
 | `team-remove <userId>` | Remove a member. Requires `--confirm`. |
+
+### Analytics setup and integrations
+
+Setup-time commands; most workspaces touch these once.
+
+| Command | What it does |
+| --- | --- |
+| `analytics-sources` | Which source writes human-traffic and AI-crawler data. |
+| `analytics-set-source <dataType> <source>` | Select the writer: `humanTraffic`/`aiCrawlers` x `embed`/`wordpress_plugin`/`cloudflare`/`none`. |
+| `analytics-activate <screen>` | One-time activation of the Analytics or Reports screen. |
+| `cloudflare-connect` | OAuth URL for read-only Cloudflare crawler analytics (human opens it). |
+| `cloudflare-zones` / `cloudflare-zone <id> <name>` | List zones on the grant; pick the one to poll. |
+| `framer-install-embed` | Install visit tracking on the Framer project. **Dry run**; installing also publishes the site. |
+| `webflow-custom-code` | Apply the tracking loader via Webflow Custom Code. **Dry run**. |
+| `shopify-install-url <shop>` | Mint an install link for the Shopify app (human approves in browser). |
 
 ### Support
 
