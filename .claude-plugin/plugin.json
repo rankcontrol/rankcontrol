@@ -1,0 +1,13 @@
+{
+  "name": "rankcontrol",
+  "version": "0.8.0",
+  "description": "The agentic SEO suite for Google and AI search. Plan content, generate and publish articles to your CMS, and track AI citations, rankings, and backlinks from the command line.",
+  "author": {
+    "name": "RankControl",
+    "url": "https://rctrl.com"
+  },
+  "homepage": "https://rctrl.com/docs/mcp",
+  "repository": "https://github.com/rankcontrol/rankcontrol",
+  "license": "MIT",
+  "keywords": ["seo", "geo", "aeo", "ai-search", "citations", "content", "backlinks"]
+}
