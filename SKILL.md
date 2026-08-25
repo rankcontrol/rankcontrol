@@ -45,9 +45,9 @@ scope is missing rather than retrying.
 1. **Dry run means dry run.** Commands marked **dry run** below do nothing
    until `--confirm` is added. That gap exists so a human can approve actions
    that are publicly visible (publishing an article, emailing a prospect,
-   retiring a live link) or that spend the customer's money (article
-   generation uses their LLM budget). Show the user the dry-run output and let
-   them decide. Never add `--confirm` on your own initiative.
+   retiring a live link) or that are costly to run (article generation).
+   Show the user the dry-run output and let them decide. Never add
+   `--confirm` on your own initiative.
 2. **Reads are safe.** Every `get`/`list`-style command is free to run as
    often as needed to answer a question.
 3. **Rate limits are server-side.** Costly routes are capped per minute. On an
@@ -134,7 +134,7 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `plan-content` | Generate candidate titles. Nothing schedules until `commit-titles`. Filters: `--topics a,b`, `--content-types a,b`, `--max-difficulty <n>`, `--intents informational,commercial,transactional`, `--citation-gaps`, `--ranking-gaps`. |
 | `commit-titles` | Approve reviewed titles onto the calendar from JSON (`--file` or stdin). |
 | `capacity` | Remaining plan slots on the calendar. |
-| `generate <contentId>` | Write a planned article's body. **Dry run**; spends LLM budget on `--confirm`. |
+| `generate <contentId>` | Write a planned article's body. **Dry run**; costly, runs on `--confirm`. |
 | `publish <contentId>` | Publish to the connected CMS. **Dry run** until `--confirm`. |
 | `reschedule <contentId> <date>` | Move a planned article to a day (`YYYY-MM-DD`). |
 | `delete-planned <contentId>` | Remove a planned title; it returns to the idea pool. |
