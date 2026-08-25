@@ -1,6 +1,6 @@
 ---
 name: rankcontrol
-description: Operate the user's RankControl workspace (rctrl.com) from the command line - AI search visibility and citations (ChatGPT, Perplexity, Claude, Gemini, Grok, Google AI Mode), SEO content planning, article generation and publishing to their CMS, leads, backlinks and outreach, social repurposing, brand memory, and reports. Use this whenever the user asks about AI visibility, AI citations, GEO/AEO, being cited by ChatGPT, their content calendar, publishing articles, lead attribution from AI search, or anything in their RankControl account, even if they don't name RankControl explicitly.
+description: Operate the user's RankControl workspace (rctrl.com) from the command line - AI search visibility and citations (ChatGPT, Perplexity, Claude, Gemini, Grok, Google AI Mode), SEO content planning, article generation and publishing to their CMS, backlinks and outreach, social repurposing, brand memory, and reports. Use this whenever the user asks about AI visibility, AI citations, GEO/AEO, being cited by ChatGPT, their content calendar, publishing articles, AI traffic attribution, or anything in their RankControl account, even if they don't name RankControl explicitly.
 homepage: https://rctrl.com/docs
 metadata: {"openclaw":{"emoji":"📈","requires":{"bins":[],"env":[]}}}
 ---
@@ -9,7 +9,7 @@ metadata: {"openclaw":{"emoji":"📈","requires":{"bins":[],"env":[]}}}
 
 RankControl (https://rctrl.com) wins Google rankings and AI citations for a
 website: it plans content, writes articles, publishes them as native posts on
-the customer's own CMS, and tracks citations, traffic, and leads across AI
+the customer's own CMS, and tracks citations and traffic across AI
 search engines. The `rankcontrol` CLI is the whole workspace in the terminal.
 Every command prints JSON.
 
@@ -91,13 +91,12 @@ rankcontrol visibility --days 30            # watch the trend
 
 | Command | What it does |
 | --- | --- |
-| `funnel` | AI pipeline, last 30 days: crawler hits, AI-referred visits, AI leads. |
+| `funnel` | AI pipeline, last 30 days: crawler hits, AI-referred visits. |
 | `report` | Executive summary: last 30 days vs the 30 before. |
 | `wins` | Biggest wins: most-cited page, cite-rate jump, ranking climb, best backlink. |
 | `agent-activity` | Recent runs per agent lane. `--per-agent <n>`, `--since-days <n>`. |
 | `jobs` | Recent agent runs and async job status. `--limit <n>`. |
 | `traffic` | Page views, visitors, sessions, bounce rate. `--days <n>`. |
-| `leads` | Captured leads with AI source attribution. `--limit <n>`. |
 | `engagement` | Per-page views and citations with 30-day sparklines. |
 
 ### Visibility
