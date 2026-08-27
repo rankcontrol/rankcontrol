@@ -1,6 +1,6 @@
 {
   "name": "rankcontrol",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "The agentic SEO suite for Google and AI search. Plan content, generate and publish articles to your CMS, and track AI citations, rankings, and backlinks from the command line.",
   "author": {
     "name": "RankControl",
