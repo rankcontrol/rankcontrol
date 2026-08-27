@@ -104,6 +104,7 @@ rankcontrol visibility --days 30            # watch the trend
 | Command | What it does |
 | --- | --- |
 | `score` | Composite visibility score with per-pillar subscores. |
+| `expedition` | First-run setup progress: five acts, per-step completion, current act. |
 | `visibility` | Daily AI visibility trend. `--days 30\|60\|90`. |
 | `sov` | Share of voice vs competitors. `--days <n>`. |
 | `sources` | Domains AI answers cite for tracked queries. `--days <n>`. |
