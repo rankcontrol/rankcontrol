@@ -116,7 +116,7 @@ rankcontrol visibility --days 30            # watch the trend
 | `query-track <queryId> <on\|off>` | Pause or resume weekly checks; tracking consumes a plan slot. |
 | `query-remove <queryId>` | Delete a query from the pool. |
 | `competitors` | Tracked competitors used in share-of-voice comparisons. |
-| `competitor-add <name> <url>` | Track a competitor (max 10). |
+| `competitor-add <name> [url]` | Track a competitor (max 10). The site is resolved from the name when the URL is omitted. |
 | `competitor-remove <competitorId>` | Stop tracking a competitor. |
 | `crawler-access` | Is the site's edge or robots.txt blocking GPTBot and ClaudeBot. |
 
@@ -167,8 +167,8 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `repurpose [contentId]` | The repurpose queue, or full drafts for one article. |
 | `repurpose-generate <contentId>` | Draft social posts. **Dry run**; `--platforms a,b` to narrow. |
 | `repurpose-edit <draftId>` | Edit a draft. `--body`, `--title`. |
-| `repurpose-channels` | Connected Postiz channels and their ids. |
-| `repurpose-push <draftId>` | Send to Postiz. **Dry run**; `--channels id1,id2`, `--when now\|schedule\|draft`, `--date <iso>`. |
+| `repurpose-channels` | Connected Postiz and Buffer channels and their ids. |
+| `repurpose-push <draftId>` | Send to Postiz or Buffer. **Dry run**; `--channels id1,id2`, `--when now\|schedule\|draft\|queue` (queue is Buffer only), `--date <iso>`, `--scheduler postiz\|buffer` when both are connected. |
 | `repurpose-mark-posted <draftId>` | Mark a draft posted when published manually. |
 
 ### Link building
