@@ -14,8 +14,8 @@ content planning and publishing, backlinks, repurposing, and reports.
 Claude Code, as a plugin:
 
 ```bash
-/plugin marketplace add anthropics/claude-plugins-community
-/plugin install rankcontrol@claude-community
+/plugin marketplace add rankcontrol/rankcontrol
+/plugin install rankcontrol@rankcontrol
 ```
 
 Any skills-compatible agent:
