@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "rankcontrol",
+  "description": "RankControl for Claude Code: run your RankControl workspace (rctrl.com) from the terminal.",
+  "owner": {
+    "name": "RankControl",
+    "email": "help@rctrl.com",
+    "url": "https://rctrl.com"
+  },
+  "plugins": [
+    {
+      "name": "rankcontrol",
+      "description": "The agentic SEO suite for Google and AI search. Teaches Claude the rankcontrol CLI: check AI visibility and citations, plan and publish content to your CMS, track rankings and backlinks.",
+      "version": "0.13.0",
+      "author": { "name": "RankControl", "url": "https://rctrl.com" },
+      "homepage": "https://rctrl.com/docs/mcp",
+      "category": "productivity",
+      "keywords": ["seo", "geo", "aeo", "ai-search", "citations", "content", "backlinks"],
+      "source": { "source": "github", "repo": "rankcontrol/rankcontrol" }
+    }
+  ]
+}
