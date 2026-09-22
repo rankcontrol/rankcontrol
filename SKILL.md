@@ -179,7 +179,8 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | --- | --- |
 | `backlinks` | The backlink table, newest first. `--status <status>`. |
 | `backlink-stats` | Totals plus outreach pipeline counts. |
-| `outreach-prospects` | Prospect sites per published article, with found contacts. |
+| `outreach-prospects` | Prospect sites per published article, with Domain Rating (`dr`, `drSource`: `ahrefs`, or `dataforseo` for an estimate) and found contacts. |
+| `outreach-stats` | Outreach funnel for the last 90 days by how each prospect was found: prospects, sent, replied, placed, with reply and placement rates per send. |
 | `outreach-find-contact <backlinkId>` | Find a contact email for a prospect. |
 | `outreach-draft-reply <backlinkId>` | AI-draft a reply to an inbound response. Nothing sends. |
 | `outreach-queue <backlinkId>` | Queue an outreach email. **Dry run**; `--subject`, `--body`. |
@@ -198,13 +199,14 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `social-draft-reply <threadId>` | AI-draft a reply for review. `--mention none\|natural\|founderOpen`. Nothing posts. |
 | `social-open <threadId>` | Take the draft to the platform yourself: prints the thread URL (X: a composer link with the reply filled in) and starts the checks that mark it Posted. `--text` for an edited reply (X: 280 characters or fewer). |
 | `social-x-handle <handle\|clear>` | Optional X handle used to recognise your posted replies. |
+| `social-reddit-profile` | Save the Reddit account the Social tab drafts for: `--karma`, `--age`, `--goal`, `--story`, `--tone`, optional `--username`. Replaces the stored profile. |
 
 ### Brand
 
 | Command | What it does |
 | --- | --- |
 | `brand` | Brand profile, products, and buyer profiles in one read. |
-| `brand-set` | Update identity: `--name`, `--industry`, `--description`, or `--json` for authors (EEAT bylines) and styleReferenceUrls (arrays replace the stored list). |
+| `brand-set` | Update identity: `--name`, `--industry`, `--description`, `--aliases` (other spellings searched as brand mentions, comma-separated), `--not-us` (same-name brands to skip), or `--json` for authors (EEAT bylines) and styleReferenceUrls. Arrays replace the stored list; a name change runs the mention search once a day at most. |
 | `brand-profile-set` | Patch voice and style fields. `--json '{"tone":"..."}'` or `--json @file.json`. |
 | `brand-product` | Create, update, or delete a product via `--json` (create: name, description, category; update: productId; delete: productId plus `"del": true`). |
 | `brand-icp` | Same semantics for buyer profiles (create: title, industry, demographics). |
