@@ -235,7 +235,6 @@ Setup-time commands; most workspaces touch these once.
 | `cloudflare-zones` / `cloudflare-zone <id> <name>` | List zones on the grant; pick the one to poll. |
 | `framer-install-embed` | Install visit tracking on the Framer project. **Dry run**; installing also publishes the site. |
 | `webflow-custom-code` | Apply the tracking loader via Webflow Custom Code. **Dry run**. |
-| `shopify-install-url <shop>` | Mint an install link for the Shopify app (human approves in browser). |
 
 ### Support
 
