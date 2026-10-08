@@ -117,6 +117,7 @@ rankcontrol visibility --days 30            # watch the trend
 | `query-track <queryId> <on\|off>` | Pause or resume weekly checks; tracking consumes a plan slot. |
 | `query-remove <queryId>` | Delete a query from the pool. |
 | `competitors` | Tracked competitors with visibility score, 30-day citations of checks, domain metrics and positioning analysis. |
+| `web-totals` | Monthly web total for your domain and every competitor you track, last 3 months, oldest month first. |
 | `competitor-add <name> [url]` | Track a competitor (max 10). The site is resolved from the name when the URL is omitted. |
 | `competitor-remove <competitorId>` | Stop tracking a competitor. |
 | `crawler-access` | Is the site's edge or robots.txt blocking GPTBot and ClaudeBot. |
@@ -185,8 +186,8 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `outreach-draft-reply <backlinkId>` | AI-draft a reply to an inbound response. Nothing sends. |
 | `outreach-queue <backlinkId>` | Queue an outreach email. **Dry run**; `--subject`, `--body`. |
 | `outreach-status <backlinkId> <status>` | Move a prospect: `identified`, `contacted`, `replied`, `link_placed`, `rejected`. |
-| `network` | Link Network credits, membership state, and placements. |
-| `network-opt-in <on\|off>` | Join or leave the Link Network. **Dry run**; leaving retires live links. |
+| `network` | Editorial Circle credits, membership state, and placements. |
+| `network-opt-in <on\|off>` | Join or leave the Editorial Circle. **Dry run**; leaving retires live links. |
 | `network-remove-placement <id>` | Retire one placement. **Dry run**; visible on the partner site. |
 
 ### Social
