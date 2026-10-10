@@ -112,6 +112,7 @@ rankcontrol visibility --days 30            # watch the trend
 | `citations` | Recent citation checks. `--model chatgpt\|perplexity\|claude\|gemini\|grok\|google_ai_mode`, `--limit <n>`. |
 | `rankings` | Verified Google and Bing positions per keyword, Search Console clicks and impressions when connected, and whether Google's AI Overview showed and cited the page. `--scope ours\|site`. |
 | `queries` | The tracked-query pool checked weekly across AI engines. |
+| `query-slots` | Tracking slots in use and the plan's limit. |
 | `query-add <queryText>` | Add a query to the pool. `--covered-by <contentId>` when an existing article already answers it, so Content Ideas does not offer it again. |
 | `query-edit <queryId> <text>` | Rewrite a tracked query; future checks use the new text. |
 | `query-track <queryId> <on\|off>` | Pause or resume weekly checks; tracking consumes a plan slot. |
@@ -134,13 +135,14 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `content` | List content pages with status. |
 | `ideas` | Scored idea backlog: uncovered queries, citation gaps, quick wins. |
 | `idea-hide <queryId>` | Hide an idea from Content Ideas. A tracked query keeps its weekly checks and its slot. |
-| `plan-idea <queryText>` | Put one idea on the calendar. `--title` to pin the headline. |
+| `plan-idea <queryText>` | Put one of your Content Ideas on the calendar. |
 | `plan-content` | Generate candidate titles. Nothing schedules until `commit-titles`. Filters: `--topics a,b`, `--content-types a,b`, `--max-difficulty <n>`, `--intents informational,commercial,transactional`, `--citation-gaps`, `--ranking-gaps`. |
 | `commit-titles` | Approve reviewed titles onto the calendar from JSON (`--file` or stdin). |
 | `capacity` | Remaining plan slots on the calendar. |
 | `generate <contentId>` | Write a planned article's body. **Dry run**; costly, runs on `--confirm`. |
 | `publish <contentId>` | Publish to the connected CMS. **Dry run** until `--confirm`. |
 | `reschedule <contentId> <date>` | Move a planned article to a day (`YYYY-MM-DD`). |
+| `article-set <contentId>` | Change a planned article's length, tone, image style or instructions. |
 | `delete-planned <contentId>` | Remove a planned title; its keyword returns to Content Ideas. |
 | `archive <contentId>` | Archive an article out of the working set. |
 | `topics` | The pillar list (topic clusters) ideas and articles group under. |
@@ -153,7 +155,7 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | Command | What it does |
 | --- | --- |
 | `settings` | Show the article policy: per-article defaults plus scheduling mode. |
-| `settings-set` | Merge-patch the policy; only flags you pass change. Flags: `--auto-publish on\|off`, `--auto-generate on\|off`, `--images on\|off`, `--title-in-hero on\|off`, `--section-infographics on\|off`, `--related-reading on\|off`, `--youtube on\|off`, `--emojis on\|off`, `--internal-links <n>`, `--external-links <n>`, `--instructions <text>`, `--flexible-schedule on\|off`, `--image-style <set>`. |
+| `settings-set` | Merge-patch the policy; only flags you pass change. Flags: `--auto-publish on\|off`, `--auto-generate on\|off`, `--images on\|off`, `--title-in-hero on\|off`, `--section-infographics on\|off`, `--related-reading on\|off`, `--youtube on\|off`, `--emojis on\|off`, `--internal-links <n>`, `--external-links <n>`, `--instructions <text>`, `--flexible-schedule on\|off`, `--image-style <style>`. |
 
 ### Site links
 
@@ -162,13 +164,15 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `site-pages` | Pages used for in-article links and Related Reading. |
 | `detect-links <url>` | Scan a sitemap for site pages. `--blog-root` to crawl a page instead. |
 | `add-pages <urls...>` | Add page URLs for internal linking; dedupes, titles auto-fill. |
+| `site-page-linking <pageId> <on\|off>` | Turn linking to a site page on or off. Off keeps the page in your list, but articles published after this don't link to it. |
+| `site-page-remove <pageId>` | Remove a page from your site pages. Articles published after this don't link to it, and scans don't add it back; add_site_pages adds it again. |
 
 ### Repurposing
 
 | Command | What it does |
 | --- | --- |
 | `repurpose [contentId]` | The repurpose queue, or full drafts for one article. |
-| `repurpose-generate <contentId>` | Draft social posts. **Dry run**; `--platforms a,b` to narrow. |
+| `repurpose-generate <contentId>` | Draft social posts. **Dry run**. |
 | `repurpose-edit <draftId>` | Edit a draft. `--body`, `--title`. |
 | `repurpose-channels` | Connected Postiz and Buffer channels and their ids. |
 | `repurpose-push <draftId>` | Send to Postiz or Buffer. **Dry run**; `--channels id1,id2`, `--when now\|schedule\|draft\|queue` (queue is Buffer only), `--date <iso>`, `--scheduler postiz\|buffer` when both are connected. |
@@ -230,7 +234,7 @@ Setup-time commands; most workspaces touch these once.
 | Command | What it does |
 | --- | --- |
 | `analytics-sources` | Which source writes human-traffic and AI-crawler data. |
-| `analytics-set-source <dataType> <source>` | Select the writer: `humanTraffic`/`aiCrawlers` x `embed`/`wordpress_plugin`/`cloudflare`/`none`. |
+| `analytics-set-source <dataType> <source>` | Select the writer: `aiCrawlers` x `cloudflare`/`wordpress_plugin`/`site_hook`. |
 | `analytics-activate <screen>` | One-time activation of the Analytics or Reports screen. |
 | `cloudflare-connect` | OAuth URL for read-only Cloudflare crawler analytics (human opens it). |
 | `cloudflare-zones` / `cloudflare-zone <id> <name>` | List zones on the grant; pick the one to poll. |
@@ -273,7 +277,7 @@ forms: `confirm: true` for the API and MCP, `--confirm` for the CLI.
 
 ```bash
 rankcontrol repurpose
-rankcontrol repurpose-generate <contentId> --platforms linkedin,x
+rankcontrol repurpose-generate <contentId>
 rankcontrol repurpose <contentId>          # read the drafts back
 # edits, then push only where the user wants it:
 rankcontrol repurpose-push <draftId> --channels <id> --when draft
