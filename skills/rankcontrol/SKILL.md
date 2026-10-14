@@ -137,12 +137,17 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `content` | List content pages with status. |
 | `ideas` | Scored idea backlog: uncovered queries, citation gaps, quick wins. |
 | `idea-hide <queryId>` | Hide an idea from Content Ideas. A tracked query keeps its weekly checks and its slot. |
+| `insights` | Insights: what to work on next on your site, with the evidence for each item. |
+| `insight-plan <itemId>` | Plan up to 3 articles that link to the item's page. **Dry run** until `--confirm`. |
+| `insight-hide <itemId>` | Hide an Insights item. It moves under Done as Hidden and does not come back. |
+| `insight-move <itemId>` | Move an Insights search no page is about to Content Ideas, tagged Search Console. The item moves under Done. |
 | `plan-idea <queryText>` | Put one of your Content Ideas on the calendar. |
 | `plan-content` | Generate candidate titles. Nothing schedules until `commit-titles`. Filters: `--topics a,b`, `--content-types a,b`, `--max-difficulty <n>`, `--intents informational,commercial,transactional`, `--citation-gaps`, `--ranking-gaps`. |
 | `commit-titles` | Approve reviewed titles onto the calendar from JSON (`--file` or stdin). |
 | `capacity` | Remaining plan slots on the calendar. |
 | `generate <contentId>` | Write a planned article's body. **Dry run**; costly, runs on `--confirm`. |
 | `publish <contentId>` | Publish to the connected CMS. **Dry run** until `--confirm`. |
+| `meta <contentId>` | Change an article's title, meta title or meta description (`--title`, `--meta-title`, `--meta-description`). **Dry run** until `--confirm`. |
 | `reschedule <contentId> <date>` | Move a planned article to a day (`YYYY-MM-DD`). |
 | `article-set <contentId>` | Change a planned article's length, tone, image style or instructions. |
 | `delete-planned <contentId>` | Remove a planned title; its keyword returns to Content Ideas. |
@@ -215,7 +220,7 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | --- | --- |
 | `brand` | Brand profile, products, buyer profiles (ICPs) and brand guidelines in one read. |
 | `brand-set` | Update identity: `--name`, `--industry`, `--description`, `--aliases` (other spellings searched as brand mentions, comma-separated), `--not-us` (same-name brands to skip), or `--json` for authors (EEAT bylines) and styleReferenceUrls. Arrays replace the stored list; a name change runs the mention search once a day at most. |
-| `brand-profile-set` | Patch voice and style fields. `--json '{"tone":"..."}'` or `--json @file.json`. |
+| `brand-profile-set` | Patch voice and style fields, and the Local business switch (`localBusiness`, `serviceArea`). `--json '{"tone":"..."}'` or `--json @file.json`. |
 | `brand-product` | Create, update, or delete a product via `--json` (create: name, description, category; update: productId; delete: productId plus `"del": true`). |
 | `brand-icp` | Same semantics for buyer profiles (create: title, industry, demographics). |
 | `icp-suggest` | Suggest up to 8 audiences for this site from its brand, products, competitors and topics. Saves nothing. `--exclude <titles...>` for different ones. |
