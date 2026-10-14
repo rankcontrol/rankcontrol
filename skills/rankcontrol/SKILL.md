@@ -69,6 +69,7 @@ scope is missing rather than retrying.
 rankcontrol score                # where visibility stands
 rankcontrol ideas                # scored gaps: uncovered queries, citation gaps
 rankcontrol plan-content --citation-gaps   # propose titles (nothing scheduled)
+rankcontrol plan-content --topics "Travel insurance" --subject "ski trips"
 # human reviews titles ->
 rankcontrol commit-titles --file approved.json
 rankcontrol generate <contentId> --confirm  # write the article (after approval)
@@ -104,14 +105,14 @@ rankcontrol visibility --days 30            # watch the trend
 | Command | What it does |
 | --- | --- |
 | `score` | Composite visibility score with per-pillar subscores. |
-| `expedition` | First-run setup progress: five acts, per-step completion, current act. |
+| `expedition` | The workspace's expeditions on the Overview: the current expedition, each step's name and whether it is done, and the next step. |
 | `visibility` | Daily AI visibility trend. `--days 30\|60\|90`. |
 | `sov` | Share of voice vs competitors. `--days <n>`. |
 | `sources` | Domains AI answers cite for tracked queries. `--days <n>`. |
 | `sentiment` | How AI answers frame the brand when cited. `--days <n>`. |
 | `citations` | Recent citation checks. `--model chatgpt\|perplexity\|claude\|gemini\|grok\|google_ai_mode`, `--limit <n>`. |
 | `rankings` | Verified Google and Bing positions per keyword, Search Console clicks and impressions when connected, and whether Google's AI Overview showed and cited the page. `--scope ours\|site`. |
-| `queries` | The tracked-query pool checked weekly across AI engines. |
+| `queries` | List the tracked queries, each with how many of the 6 AI engines cited it in their latest check. |
 | `query-slots` | Tracking slots in use and the plan's limit. |
 | `query-add <queryText>` | Add a query to the pool. `--covered-by <contentId>` when an existing article already answers it, so Content Ideas does not offer it again. |
 | `query-edit <queryId> <text>` | Rewrite a tracked query; future checks use the new text. |
@@ -119,6 +120,7 @@ rankcontrol visibility --days 30            # watch the trend
 | `query-remove <queryId>` | Delete a query from the pool. |
 | `competitors` | Tracked competitors with visibility score, 30-day citations of checks, domain metrics and positioning analysis. |
 | `web-totals` | Monthly web total for your domain and every competitor you track, last 3 months, oldest month first. |
+| `footprint` | Web footprint (0-10) for your domain and every competitor you track, with the median peer. |
 | `competitor-add <name> [url]` | Track a competitor (max 10). The site is resolved from the name when the URL is omitted. |
 | `competitor-remove <competitorId>` | Stop tracking a competitor. |
 | `crawler-access` | Is the site's edge or robots.txt blocking GPTBot and ClaudeBot. |
@@ -165,7 +167,7 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `detect-links <url>` | Scan a sitemap for site pages. `--blog-root` to crawl a page instead. |
 | `add-pages <urls...>` | Add page URLs for internal linking; dedupes, titles auto-fill. |
 | `site-page-linking <pageId> <on\|off>` | Turn linking to a site page on or off. Off keeps the page in your list, but articles published after this don't link to it. |
-| `site-page-remove <pageId>` | Remove a page from your site pages. Articles published after this don't link to it, and scans don't add it back; add_site_pages adds it again. |
+| `site-page-remove <pageId>` | Remove a page from your site pages. Articles published after this don't link to it, and scans don't add it back; add-pages adds it again. |
 
 ### Repurposing
 
@@ -190,6 +192,7 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `outreach-draft-reply <backlinkId>` | AI-draft a reply to an inbound response. Nothing sends. |
 | `outreach-queue <backlinkId>` | Queue an outreach email. **Dry run**; `--subject`, `--body`. |
 | `outreach-status <backlinkId> <status>` | Move a prospect: `identified`, `contacted`, `replied`, `link_placed`, `rejected`. |
+| `outreach-cancel <backlinkId>` | Cancel a queued outreach email (first email, reply or follow-up) before it sends. |
 | `network` | Editorial Circle credits, membership state, and placements. |
 | `network-opt-in <on\|off>` | Join or leave the Editorial Circle. **Dry run**; leaving retires live links. |
 | `network-remove-placement <id>` | Retire one placement. **Dry run**; visible on the partner site. |
@@ -210,13 +213,18 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 
 | Command | What it does |
 | --- | --- |
-| `brand` | Brand profile, products, and buyer profiles in one read. |
+| `brand` | Brand profile, products, buyer profiles (ICPs) and brand guidelines in one read. |
 | `brand-set` | Update identity: `--name`, `--industry`, `--description`, `--aliases` (other spellings searched as brand mentions, comma-separated), `--not-us` (same-name brands to skip), or `--json` for authors (EEAT bylines) and styleReferenceUrls. Arrays replace the stored list; a name change runs the mention search once a day at most. |
 | `brand-profile-set` | Patch voice and style fields. `--json '{"tone":"..."}'` or `--json @file.json`. |
 | `brand-product` | Create, update, or delete a product via `--json` (create: name, description, category; update: productId; delete: productId plus `"del": true`). |
 | `brand-icp` | Same semantics for buyer profiles (create: title, industry, demographics). |
 | `icp-suggest` | Suggest up to 8 audiences for this site from its brand, products, competitors and topics. Saves nothing. `--exclude <titles...>` for different ones. |
 | `icp-draft` | Draft one buyer profile to review: `--describe <sentence>`, or `--title` and `--who` from a suggestion; `--json` keeps the fields you pass and fills the rest. Saves nothing; save it with `brand-icp`. |
+| `brand-reviewed` | Mark the brand as reviewed (Expedition I). |
+| `guideline-add <type> <avoid> <instead>` | Add a brand guideline. |
+| `guideline-on <id>` | Turn a brand guideline on. |
+| `guideline-off <id>` | Turn a brand guideline off. |
+| `guideline-remove <id>` | Delete a brand guideline. |
 
 ### Team
 
@@ -246,6 +254,8 @@ Setup-time commands; most workspaces touch these once.
 | Command | What it does |
 | --- | --- |
 | `support <subject>` | Message the RankControl team. `--message <text>` required, `--page <url>` optional. Capped 3/min. |
+| `help-page [page]` | Read a help page: setup guides for each publishing destination, the crawler and its IP, the API, CLI and MCP, and the plan and pricing; without a page, list the pages. |
+| `billing` | Billing as Settings, Billing shows it: status, billing cycle, next charge, add-ons, usage and recent payments (read-only). |
 
 ## Worked examples
 
