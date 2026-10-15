@@ -42,25 +42,32 @@ scope is missing rather than retrying.
 
 ## Ground rules
 
-1. **Dry run means dry run.** Commands marked **dry run** below do nothing
-   until `--confirm` is added. That gap exists so a human can approve actions
-   that are publicly visible (publishing an article, emailing a prospect,
-   retiring a live link) or that are costly to run (article generation).
-   Show the user the dry-run output and let them decide. Never add
-   `--confirm` on your own initiative.
+1. **Do what the user asked.** Commands marked **dry run** below do nothing
+   until `--confirm` is added. When the user asked for the action, run it
+   with `--confirm`. Run the dry run first only when the request is unclear
+   or the user wants to see it. Never add `--confirm` for an action the user
+   did not ask for.
 2. **Reads are safe.** Every `get`/`list`-style command is free to run as
    often as needed to answer a question.
 3. **Rate limits are server-side.** Costly routes are capped per minute. On an
    `HTTP 429`, back off and slow down; do not retry in a tight loop.
-4. **Propose, then commit.** `plan-content` only drafts candidate titles.
-   Nothing lands on the calendar until `commit-titles`, which is the review
-   gate. Show proposed titles to the user before committing.
-5. **Sanity-check surprising data before alarming anyone.** A score that
+4. **Plan, then commit.** `plan-content` only drafts candidate titles.
+   Nothing lands on the calendar until `commit-titles`. When the user asked
+   to plan articles, commit the titles; when they asked for ideas, show the
+   titles first.
+5. **Some changes wait for the owner.** Removals (removing, archiving,
+   hiding, replacing a list) and team changes always do. So does every
+   change for 2 hours after the key reads text written outside the
+   workspace: prospect replies, AI answers, social threads, competitor
+   pages. These answer `approval_required` with an `approveUrl`: give the
+   user the link, and the workspace owner approves it in RankControl.
+   `rankcontrol approval <approvalId>` shows where it stands.
+6. **Sanity-check surprising data before alarming anyone.** A score that
    drops to zero overnight, or long runs of checks with empty responses, can
    be a checking-pipeline hiccup rather than a real visibility collapse.
    Present it as "the data shows X, worth verifying" and offer to file a
    ticket instead of declaring a crisis.
-6. Something broken or surprising? `rankcontrol support "<subject>" --message
+7. Something broken or surprising? `rankcontrol support "<subject>" --message
    "<details>"` opens a ticket with the RankControl team (capped 3/min).
 
 ## The core loop
@@ -70,11 +77,9 @@ rankcontrol score                # where visibility stands
 rankcontrol ideas                # scored gaps: uncovered queries, citation gaps
 rankcontrol plan-content --citation-gaps   # propose titles (nothing scheduled)
 rankcontrol plan-content --topics "Travel insurance" --subject "ski trips"
-# human reviews titles ->
 rankcontrol commit-titles --file approved.json
-rankcontrol generate <contentId> --confirm  # write the article (after approval)
-rankcontrol publish <contentId>             # dry run: shows what would happen
-rankcontrol publish <contentId> --confirm   # human said go
+rankcontrol write --next 3 --publish --confirm  # write and publish the next 3
+rankcontrol write-runs                      # each article's state
 rankcontrol visibility --days 30            # watch the trend
 ```
 
@@ -97,7 +102,7 @@ rankcontrol visibility --days 30            # watch the trend
 | `wins` | Biggest wins: most-cited page, cite-rate jump, ranking climb, best backlink. |
 | `agent-activity` | Recent runs per agent lane. `--per-agent <n>`, `--since-days <n>`. |
 | `jobs` | Recent agent runs and async job status. `--limit <n>`. |
-| `traffic` | Page views, visitors, sessions, bounce rate. `--days <n>`. |
+| `traffic` | Page views, visitors, sessions, bounce rate. `--days <n>`. `--scope site`: the whole site from Google Analytics (visits, from search, from AI, top pages), when connected. |
 | `engagement` | Per-page views and citations with 30-day sparklines. |
 
 ### Visibility
@@ -135,7 +140,7 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | Command | What it does |
 | --- | --- |
 | `content` | List content pages with status. |
-| `ideas` | Scored idea backlog: uncovered queries, citation gaps, quick wins. |
+| `ideas` | Scored idea backlog: uncovered queries, citation gaps, quick wins. An idea the site already ranks for names that page (`rankingPage`); an Almost cited one names the page ChatGPT read (`readPage`). |
 | `idea-hide <queryId>` | Hide an idea from Content Ideas. A tracked query keeps its weekly checks and its slot. |
 | `insights` | Insights: what to work on next on your site, with the evidence for each item. |
 | `insight-plan <itemId>` | Plan up to 3 articles that link to the item's page. **Dry run** until `--confirm`. |
@@ -146,6 +151,9 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `commit-titles` | Approve reviewed titles onto the calendar from JSON (`--file` or stdin). |
 | `capacity` | Remaining plan slots on the calendar. |
 | `generate <contentId>` | Write a planned article's body. **Dry run**; costly, runs on `--confirm`. |
+| `write` | Write several planned articles one after another: `--next <n>` or `--ids a,b`; `--publish` publishes each one once it is written. News and trending articles are written but not published. **Dry run** until `--confirm`. |
+| `write-runs` | Recent write runs: each article's state and why a run stopped. |
+| `write-stop <runId>` | Stop a write run. Nothing new starts; an article being written finishes as a draft. |
 | `publish <contentId>` | Publish to the connected CMS. **Dry run** until `--confirm`. |
 | `meta <contentId>` | Change an article's title, meta title or meta description (`--title`, `--meta-title`, `--meta-description`). **Dry run** until `--confirm`. |
 | `reschedule <contentId> <date>` | Move a planned article to a day (`YYYY-MM-DD`). |
@@ -239,6 +247,7 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `team-invite <email>` | Invite a member. **Dry run**; `--perms content=write,analytics=read`. |
 | `team-revoke <invitationId>` | Revoke a pending invite. |
 | `team-remove <userId>` | Remove a member. Requires `--confirm`. |
+| `approval <approvalId>` | Where a change that waits for the workspace owner stands, and what happened. |
 
 ### Analytics setup and integrations
 
@@ -275,13 +284,19 @@ rankcontrol plan-content --citation-gaps
 echo '{"titles":[...approved subset...]}' | rankcontrol commit-titles
 ```
 
-**Publish flow (the human decides at each paid or public step):**
+**Write and publish the next planned articles:**
+
+```bash
+rankcontrol write --next 4 --publish       # dry run: which articles, and what would stop each
+rankcontrol write --next 4 --publish --confirm
+rankcontrol write-runs                     # Writing, Written, Publishing, Live
+```
+
+**Publish one article:**
 
 ```bash
 # publishable = body written but not live yet
 rankcontrol content | jq '[.[] | select(.status=="draft")][0]'
-rankcontrol publish <contentId>            # dry run: previews what would go live
-# report the dry-run result; only after an explicit yes:
 rankcontrol publish <contentId> --confirm
 ```
 
@@ -306,3 +321,4 @@ rankcontrol repurpose-push <draftId> --channels <id> --when draft
 | `HTTP 403` | Key lacks the scope for this command. Tell the user which command failed; scopes are edited in Dashboard -> Settings -> API Keys. |
 | `HTTP 429` | Rate limit. Wait a minute; slow the loop. |
 | `{"dryRun":true,...}` | Not an error. The action is previewed and needs `--confirm`. |
+| `{"status":"approval_required",...}` | Not an error. The change waits for the workspace owner; give the user the `approveUrl`. |
