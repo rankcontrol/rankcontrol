@@ -127,7 +127,7 @@ rankcontrol visibility --days 30            # watch the trend
 | `web-totals` | Monthly web total for your domain and every competitor you track, last 3 months, oldest month first. |
 | `footprint` | Web footprint (0-10) for your domain and every competitor you track, with the median peer. |
 | `competitor-add <name> [url]` | Track a competitor (max 10). The site is resolved from the name when the URL is omitted. |
-| `competitor-remove <competitorId>` | Stop tracking a competitor. |
+| `competitor-remove <competitorId>` | Stop tracking a competitor (waits for the owner's approval in RankControl). |
 | `crawler-access` | Is the site's edge or robots.txt blocking GPTBot and ClaudeBot. |
 
 ### Content
