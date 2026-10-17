@@ -51,10 +51,10 @@ scope is missing rather than retrying.
    often as needed to answer a question.
 3. **Rate limits are server-side.** Costly routes are capped per minute. On an
    `HTTP 429`, back off and slow down; do not retry in a tight loop.
-4. **Plan, then commit.** `plan-content` only drafts candidate titles.
-   Nothing lands on the calendar until `commit-titles`. When the user asked
-   to plan articles, commit the titles; when they asked for ideas, show the
-   titles first.
+4. **Plan, then add.** `plan-content` shows the next batch as a dry run.
+   `--confirm` adds it, and `--keep` adds only some. When the user asked to
+   plan articles, add the titles. When they asked for ideas, show the titles
+   first.
 5. **Some changes wait for the owner.** Removals (removing, archiving,
    hiding, replacing a list) and team changes always do. So does every
    change for 2 hours after the key reads text written outside the
@@ -75,7 +75,8 @@ scope is missing rather than retrying.
 ```bash
 rankcontrol score                # where visibility stands
 rankcontrol ideas                # scored gaps: uncovered queries, citation gaps
-rankcontrol plan-content --citation-gaps   # propose titles (nothing scheduled)
+rankcontrol plan-content                   # the next batch (dry run)
+rankcontrol plan-content --confirm --keep <id>,<id>   # add only those titles
 rankcontrol plan-content --topics "Travel insurance" --subject "ski trips"
 rankcontrol commit-titles --file approved.json
 rankcontrol write --next 3 --publish --confirm  # write and publish the next 3
@@ -147,8 +148,9 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `insight-hide <itemId>` | Hide an Insights item. It moves under Done as Hidden and does not come back. |
 | `insight-move <itemId>` | Move an Insights search no page is about to Content Ideas, tagged Search Console. The item moves under Done. |
 | `plan-idea <queryText>` | Put one of your Content Ideas on the calendar. |
-| `plan-content` | Generate candidate titles. Nothing schedules until `commit-titles`. Filters: `--topics a,b`, `--content-types a,b`, `--max-difficulty <n>`, `--intents informational,commercial,transactional`, `--citation-gaps`, `--ranking-gaps`. |
-| `commit-titles` | Approve reviewed titles onto the calendar from JSON (`--file` or stdin). |
+| `plan-content` | Show the next batch of titles. **Dry run** until `--confirm`. `--keep a,b` limits it to those titles. Options: `--subject <text>` with `--topics a,b` for titles about one subject. |
+| `commit-titles` | Add reviewed titles to the calendar from JSON (`--file` or stdin): the ones `plan-content` returned with a runId. |
+| `remove-title <titleId>` | Remove a title from the next batch for good. It waits for the workspace owner. |
 | `capacity` | Remaining plan slots on the calendar. |
 | `generate <contentId>` | Write a planned article's body. **Dry run**; costly, runs on `--confirm`. |
 | `write` | Write several planned articles one after another: `--next <n>` or `--ids a,b`; `--publish` publishes each one once it is written. News and trending articles are written but not published. **Dry run** until `--confirm`. |
@@ -273,15 +275,15 @@ Setup-time commands; most workspaces touch these once.
 
 ## Worked examples
 
-**Morning visibility check, then propose content for the gaps:**
+**Morning visibility check, then plan the next batch:**
 
 ```bash
 rankcontrol score
 rankcontrol citations --limit 20
 rankcontrol ideas | jq '.[:5]'
-rankcontrol plan-content --citation-gaps
-# show the proposed titles to the user; if they approve some:
-echo '{"titles":[...approved subset...]}' | rankcontrol commit-titles
+rankcontrol plan-content
+# show the titles to the user, then add the ones they want:
+rankcontrol plan-content --confirm --keep <id>,<id>
 ```
 
 **Write and publish the next planned articles:**
