@@ -143,14 +143,14 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `content` | List content pages with status. |
 | `ideas` | Scored idea backlog: uncovered queries, citation gaps, quick wins. An idea the site already ranks for names that page (`rankingPage`); an Almost cited one names the page ChatGPT read (`readPage`). |
 | `idea-hide <queryId>` | Hide an idea from Content Ideas. A tracked query keeps its weekly checks and its slot. |
-| `insights` | Insights: what to work on next on your site, with the evidence for each item. |
+| `insights` | Action Items: what to work on next on your site, with the evidence for each item. |
 | `insight-plan <itemId>` | Plan up to 3 articles that link to the item's page. **Dry run** until `--confirm`. |
-| `insight-hide <itemId>` | Hide an Insights item. It moves under Done as Hidden and does not come back. |
-| `insight-move <itemId>` | Move an Insights search no page is about to Content Ideas, tagged Search Console. The item moves under Done. |
+| `insight-hide <itemId>` | Hide an action item. It moves under Done as Hidden and does not come back. |
+| `insight-move <itemId>` | Move a search no page is about from Action Items to Content Ideas, tagged Search Console. The item moves under Done. |
 | `plan-idea <queryText>` | Put one of your Content Ideas on the calendar. |
-| `plan-content` | Show the next batch of titles. **Dry run** until `--confirm`. `--keep a,b` limits it to those titles. Options: `--subject <text>` with `--topics a,b` for titles about one subject. |
+| `plan-content` | Show the next batch of titles. **Dry run** until `--confirm`. `--keep a,b` limits it to those titles. Options: `--news` for this week's news instead of the next batch; `--subject <text>` with `--topics a,b` for titles about one subject. |
 | `commit-titles` | Add reviewed titles to the calendar from JSON (`--file` or stdin): the ones `plan-content` returned with a runId. |
-| `remove-title <titleId>` | Remove a title from the next batch for good. It waits for the workspace owner. |
+| `remove-title <titleId>` | Remove a title from the next batch or this week's news for good. It waits for the workspace owner. |
 | `capacity` | Remaining plan slots on the calendar. |
 | `generate <contentId>` | Write a planned article's body. **Dry run**; costly, runs on `--confirm`. |
 | `write` | Write several planned articles one after another: `--next <n>` or `--ids a,b`; `--publish` publishes each one once it is written. News and trending articles are written but not published. **Dry run** until `--confirm`. |
@@ -271,6 +271,7 @@ Setup-time commands; most workspaces touch these once.
 | --- | --- |
 | `support <subject>` | Message the RankControl team. `--message <text>` required, `--page <url>` optional. Capped 3/min. |
 | `help-page [page]` | Read a help page: setup guides for each publishing destination, the crawler and its IP, the API, CLI and MCP, and the plan and pricing; without a page, list the pages. |
+| `guides <question>` | Search the guides on RankControl's blog about SEO and AI search; prints the sections that best answer the question, each with its guide's link. |
 | `billing` | Billing as Settings, Billing shows it: status, billing cycle, next charge, add-ons, usage and recent payments (read-only). |
 
 ## Worked examples
