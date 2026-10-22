@@ -100,10 +100,11 @@ rankcontrol visibility --days 30            # watch the trend
 | --- | --- |
 | `funnel` | AI pipeline, last 30 days: crawler hits, AI-referred visits. |
 | `report` | Executive summary: last 30 days vs the 30 before. |
-| `wins` | Biggest wins: most-cited page, cite-rate jump, ranking climb, best backlink. |
+| `wins` | Biggest wins: most-cited page, cite-rate jump, ranking climb, best new backlink (spam left out). |
 | `agent-activity` | Recent runs per agent lane. `--per-agent <n>`, `--since-days <n>`. |
 | `jobs` | Recent agent runs and async job status. `--limit <n>`. |
 | `traffic` | Page views, visitors, sessions, bounce rate. `--days <n>`. `--scope site`: the whole site from Google Analytics (visits, from search, from AI, top pages), when connected. |
+| `ai-crawling` | AI crawler visits: the total, each crawler's visits with the busiest first, and each day's visits per crawler. `--days 7\|30\|90`. |
 | `engagement` | Per-page views and citations with 30-day sparklines. |
 
 ### Visibility
@@ -199,24 +200,24 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 
 | Command | What it does |
 | --- | --- |
-| `backlinks` | The backlink table, newest first. `--status <status>`. |
-| `backlink-stats` | Totals plus outreach pipeline counts. |
-| `outreach-prospects` | Prospect sites per published article, with Domain Rating (`dr`, `drSource`: `ahrefs`, or `dataforseo` for an estimate) and found contacts. |
+| `backlinks` | The backlink table, newest first, with each linking site's Domain Rating and spam verdict. `--status <status>`. |
+| `backlink-stats` | Totals plus outreach pipeline counts, with the hidden spam counted apart and the last 12 weekly checks. |
+| `outreach-prospects` | Prospect sites per published article, with Domain Rating (`dr`, `drSource`: `ahrefs`, or `dataforseo` for an estimate), found contacts, and each prospect's next step (`nextMove`) and stage. |
 | `outreach-stats` | Outreach funnel for the last 90 days by how each prospect was found: prospects, sent, replied, placed, with reply and placement rates per send. |
 | `outreach-find-contact <backlinkId>` | Find a contact email for a prospect. |
 | `outreach-draft-reply <backlinkId>` | AI-draft a reply to an inbound response. Nothing sends. |
 | `outreach-queue <backlinkId>` | Queue an outreach email. **Dry run**; `--subject`, `--body`. |
 | `outreach-status <backlinkId> <status>` | Move a prospect: `identified`, `contacted`, `replied`, `link_placed`, `rejected`. |
 | `outreach-cancel <backlinkId>` | Cancel a queued outreach email (first email, reply or follow-up) before it sends. |
-| `network` | Editorial Circle credits, membership state, and placements. |
-| `network-opt-in <on\|off>` | Join or leave the Editorial Circle. **Dry run**; leaving retires live links. |
-| `network-remove-placement <id>` | Retire one placement. **Dry run**; visible on the partner site. |
+| `editorial-circle` | Editorial Circle credits, membership state, and placements. |
+| `editorial-circle-opt-in <on\|off>` | Join or leave the Editorial Circle. **Dry run**; leaving retires live links. |
+| `editorial-circle-remove-placement <id>` | Retire one placement. **Dry run**; visible on the partner site. |
 
 ### Social
 
 | Command | What it does |
 | --- | --- |
-| `social` | Thread prospects (Reddit/X) with rules context. `--platform`, `--status`, `--age ranked\|new`. |
+| `social` | Thread prospects (Reddit/X) with rules context, each thread's next step (`nextMove`) and stage. `--platform`, `--status`, `--age ranked\|new`. |
 | `social-stats` | Thread pipeline counts. |
 | `social-status <threadId> skipped` | Skip a thread. The only manual status; Posted is detected automatically. |
 | `social-draft-reply <threadId>` | AI-draft a reply for review. `--mention none\|natural\|founderOpen`. Nothing posts. |
