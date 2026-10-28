@@ -74,7 +74,6 @@ scope is missing rather than retrying.
 
 ```bash
 rankcontrol score                # where visibility stands
-rankcontrol ideas                # scored gaps: uncovered queries, citation gaps
 rankcontrol plan-content                   # the next batch (dry run)
 rankcontrol plan-content --confirm --keep <id>,<id>   # add only those titles
 rankcontrol plan-content --topics "Travel insurance" --subject "ski trips"
@@ -117,15 +116,15 @@ rankcontrol visibility --days 30            # watch the trend
 | `sov` | Share of voice vs competitors. `--days <n>`. |
 | `sources` | Domains AI answers cite for tracked queries. `--days <n>`. |
 | `sentiment` | How AI answers frame the brand when cited. `--days <n>`. |
-| `citations` | Recent citation checks. `--model chatgpt\|perplexity\|claude\|gemini\|grok\|google_ai_mode`, `--limit <n>`. |
+| `citations` | Recent citation checks. `--model chatgpt\|perplexity\|claude\|gemini\|grok\|google_ai_mode`, `--limit <n>`. `--csv` prints CSV instead of JSON. |
 | `rankings` | Verified Google and Bing positions per keyword, Search Console clicks and impressions when connected, and whether Google's AI Overview showed and cited the page. `--scope ours\|site`. |
-| `queries` | List the tracked queries, each with how many of the 6 AI engines cited it in their latest check. |
+| `queries` | List the tracked queries, each with how many of the 6 AI engines cited it in their latest check. `--csv` prints CSV instead of JSON. |
 | `query-slots` | Tracking slots in use and the plan's limit. |
-| `query-add <queryText>` | Add a query to the pool. `--covered-by <contentId>` when an existing article already answers it, so Content Ideas does not offer it again. |
+| `query-add <queryText>` | Add a query to the pool. `--covered-by <contentId>` when an existing article already answers it, so Plan Content does not offer it again. |
 | `query-edit <queryId> <text>` | Rewrite a tracked query; future checks use the new text. |
 | `query-track <queryId> <on\|off>` | Pause or resume weekly checks; tracking consumes a plan slot. |
 | `query-remove <queryId>` | Delete a query from the pool. |
-| `competitors` | Tracked competitors with visibility score, 30-day citations of checks, domain metrics and positioning analysis. |
+| `competitors` | Tracked competitors with visibility score, 30-day citations of checks, 30-day win rate, domain metrics and positioning analysis. |
 | `web-totals` | Monthly web total for your domain and every competitor you track, last 3 months, oldest month first. |
 | `footprint` | Web footprint (0-10) for your domain and every competitor you track, with the median peer. |
 | `competitor-add <name> [url]` | Track a competitor (max 10). The site is resolved from the name when the URL is omitted. |
@@ -137,18 +136,15 @@ rankcontrol visibility --days 30            # watch the trend
 Article lifecycle: `planned` (title on the calendar, no body yet) -> `draft`
 (body written, ready to publish) -> `published` (live on the customer's site)
 -> `archived`. There is no "approved" status; generation progress is a
-separate field, not a status. `content` and `ideas` return bare JSON arrays.
+separate field, not a status. `content` returns a bare JSON array.
 
 | Command | What it does |
 | --- | --- |
 | `content` | List content pages with status. |
-| `ideas` | Scored idea backlog: uncovered queries, citation gaps, quick wins. An idea the site already ranks for names that page (`rankingPage`); an Almost cited one names the page ChatGPT read (`readPage`). |
-| `idea-hide <queryId>` | Hide an idea from Content Ideas. A tracked query keeps its weekly checks and its slot. |
 | `insights` | Action Items: what to work on next on your site, with the evidence for each item. |
 | `insight-plan <itemId>` | Plan up to 3 articles that link to the item's page. **Dry run** until `--confirm`. |
 | `insight-hide <itemId>` | Hide an action item. It moves under Done as Hidden and does not come back. |
-| `insight-move <itemId>` | Move a search no page is about from Action Items to Content Ideas, tagged Search Console. The item moves under Done. |
-| `plan-idea <queryText>` | Put one of your Content Ideas on the calendar. |
+| `insight-move <itemId>` | Save a search no page is about for Plan Content, tagged Search Console. The item moves under Done. |
 | `plan-content` | Show the next batch of titles. **Dry run** until `--confirm`. `--keep a,b` limits it to those titles. Options: `--news` for this week's news instead of the next batch; `--subject <text>` with `--topics a,b` for titles about one subject. |
 | `commit-titles` | Add reviewed titles to the calendar from JSON (`--file` or stdin): the ones `plan-content` returned with a runId. |
 | `remove-title <titleId>` | Remove a title from the next batch or this week's news for good. It waits for the workspace owner. |
@@ -161,9 +157,9 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | `meta <contentId>` | Change an article's title, meta title or meta description (`--title`, `--meta-title`, `--meta-description`). **Dry run** until `--confirm`. |
 | `reschedule <contentId> <date>` | Move a planned article to a day (`YYYY-MM-DD`). |
 | `article-set <contentId>` | Change a planned article's length, tone, image style or instructions. |
-| `delete-planned <contentId>` | Remove a planned title; its keyword returns to Content Ideas. |
+| `delete-planned <contentId>` | Remove a planned title; its search stays saved for Plan Content. |
 | `archive <contentId>` | Archive an article out of the working set. |
-| `topics` | The pillar list (topic clusters) ideas and articles group under. |
+| `topics` | The pillar list (topic clusters) searches and articles group under. |
 | `topics-set <topics...>` | Replace the FULL pillar list; read `topics` first and send every topic that should exist. Up to 20 topics. |
 | `optimizer` | Published pages ranked by citability, worst first, with open fixes. |
 | `internal-links <contentId>` | Inbound and outbound internal links for an article. |
@@ -202,12 +198,13 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 | --- | --- |
 | `backlinks` | The backlink table, newest first, with each linking site's Domain Rating and spam verdict. `--status <status>`. |
 | `backlink-stats` | Totals plus outreach pipeline counts, with the hidden spam counted apart and the last 12 weekly checks. |
-| `outreach-prospects` | Prospect sites per published article, with Domain Rating (`dr`, `drSource`: `ahrefs`, or `dataforseo` for an estimate), found contacts, and each prospect's next step (`nextMove`) and stage. |
+| `outreach-prospects` | Prospect sites per published article, with Domain Rating (`dr`, `drSource`: whether the rating is measured or estimated), found contacts, and each prospect's next step (`nextMove`) and stage. `--ai-sources`: only AI sources, pages AI engines cite for your tracked questions, each with the product or service it offers (needs one in Brand Control). |
 | `outreach-stats` | Outreach funnel for the last 90 days by how each prospect was found: prospects, sent, replied, placed, with reply and placement rates per send. |
 | `outreach-find-contact <backlinkId>` | Find a contact email for a prospect. |
 | `outreach-draft-reply <backlinkId>` | AI-draft a reply to an inbound response. Nothing sends. |
 | `outreach-queue <backlinkId>` | Queue an outreach email. **Dry run**; `--subject`, `--body`. |
 | `outreach-status <backlinkId> <status>` | Move a prospect: `identified`, `contacted`, `replied`, `link_placed`, `rejected`. |
+| `outreach-ai-source-product <backlinkId> <productId>` | Change the product or service an AI source offers, until its pitch is queued (product ids from `brand`). |
 | `outreach-cancel <backlinkId>` | Cancel a queued outreach email (first email, reply or follow-up) before it sends. |
 | `editorial-circle` | Editorial Circle credits, membership state, and placements. |
 | `editorial-circle-opt-in <on\|off>` | Join or leave the Editorial Circle. **Dry run**; leaving retires live links. |
@@ -217,7 +214,7 @@ separate field, not a status. `content` and `ideas` return bare JSON arrays.
 
 | Command | What it does |
 | --- | --- |
-| `social` | Thread prospects (Reddit/X) with rules context, each thread's next step (`nextMove`) and stage. `--platform`, `--status`, `--age ranked\|new`. |
+| `social` | Thread prospects (Reddit/X) with rules context, each thread's next step (`nextMove`) and stage. `--platform`, `--status`, `--stage`, `--age ranked\|new`, `--ai-sources` for only the threads AI engines cite for your tracked questions (needs a product or service in Brand Control). |
 | `social-stats` | Thread pipeline counts. |
 | `social-status <threadId> skipped` | Skip a thread. The only manual status; Posted is detected automatically. |
 | `social-draft-reply <threadId>` | AI-draft a reply for review. `--mention none\|natural\|founderOpen`. Nothing posts. |
@@ -282,7 +279,6 @@ Setup-time commands; most workspaces touch these once.
 ```bash
 rankcontrol score
 rankcontrol citations --limit 20
-rankcontrol ideas | jq '.[:5]'
 rankcontrol plan-content
 # show the titles to the user, then add the ones they want:
 rankcontrol plan-content --confirm --keep <id>,<id>
