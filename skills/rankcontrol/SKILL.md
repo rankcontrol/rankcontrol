@@ -1,6 +1,6 @@
 ---
 name: rankcontrol
-description: Operate the user's RankControl workspace (rctrl.com) from the command line - AI search visibility and citations (ChatGPT, Perplexity, Claude, Gemini, Grok, Google AI Mode), SEO content planning, article generation and publishing to their CMS, backlinks and outreach, social repurposing, brand memory, and reports. Use this whenever the user asks about AI visibility, AI citations, GEO/AEO, being cited by ChatGPT, their content calendar, publishing articles, AI traffic attribution, or anything in their RankControl account, even if they don't name RankControl explicitly.
+description: Operate the user's RankControl workspace (rctrl.com) from the command line - AI search visibility and citations (ChatGPT, Perplexity, Claude, Gemini, Grok, Google AI Mode, Google AI Overviews), SEO content planning, article generation and publishing to their CMS, backlinks and outreach, social repurposing, brand memory, and reports. Use this whenever the user asks about AI visibility, AI citations, GEO/AEO, being cited by ChatGPT, their content calendar, publishing articles, AI traffic attribution, or anything in their RankControl account, even if they don't name RankControl explicitly.
 homepage: https://rctrl.com/docs
 metadata: {"openclaw":{"emoji":"📈","requires":{"bins":[],"env":[]}}}
 ---
@@ -102,7 +102,7 @@ rankcontrol visibility --days 30            # watch the trend
 | `wins` | Biggest wins: most-cited page, cite-rate jump, ranking climb, best new backlink (spam left out). |
 | `agent-activity` | Recent runs per agent lane. `--per-agent <n>`, `--since-days <n>`. |
 | `jobs` | Recent agent runs and async job status. `--limit <n>`. |
-| `traffic` | Page views, visitors, sessions, bounce rate. `--days <n>`. `--scope site`: the whole site from Google Analytics (visits, from search, from AI, top pages), when connected. |
+| `traffic` | Page views, visitors, sessions, bounce rate. `--days <n>`. `--scope site`: the whole site from Google Analytics (visits, from search, from AI, top pages, AI key events and revenue), when connected. |
 | `ai-crawling` | AI crawler visits: the total, each crawler's visits with the busiest first, and each day's visits per crawler. `--days 7\|30\|90`. |
 | `engagement` | Per-page views and citations with 30-day sparklines. |
 
@@ -110,26 +110,30 @@ rankcontrol visibility --days 30            # watch the trend
 
 | Command | What it does |
 | --- | --- |
-| `score` | Composite visibility score with per-pillar subscores. |
+| `score` | Composite visibility score with per-pillar subscores. `--topic <topic>`, `--engines <ids>`. |
 | `expedition` | The workspace's expeditions on the Overview: the current expedition, each step's name and whether it is done, and the next step. |
-| `visibility` | Daily AI visibility trend. `--days 30\|60\|90`. |
-| `sov` | Share of voice vs competitors. `--days <n>`. |
-| `sources` | Domains AI answers cite for tracked queries. `--days <n>`. |
-| `sentiment` | How AI answers frame the brand when cited. `--days <n>`. |
-| `citations` | Recent citation checks. `--model chatgpt\|perplexity\|claude\|gemini\|grok\|google_ai_mode`, `--limit <n>`. `--csv` prints CSV instead of JSON. |
+| `visibility` | Daily AI visibility trend. `--days 30\|60\|90`, `--topic <topic>`, `--engines <ids>`. |
+| `sov` | Share of voice vs competitors. `--days <n>`, `--topic <topic>`, `--engines <ids>`. |
+| `sources` | Domains AI answers cite for tracked queries. `--days <n>`, `--topic <topic>`, `--engines <ids>`. `--pages` lists the cited pages instead, each with its type and its answers this 30 days and the 30 before. |
+| `sentiment` | How AI answers frame the brand when cited. `--days <n>`, `--topic <topic>`, `--engines <ids>`. |
+| `citations` | Recent citation checks; `branded` marks one whose question names your brand. `contradiction` marks one whose answer contradicts one of your facts. `--model chatgpt\|perplexity\|claude\|gemini\|grok\|google_ai_mode\|google_ai_overview`, `--limit <n>`, `--topic <topic>`, `--engines <ids>`. `--csv` prints CSV instead of JSON. |
 | `rankings` | Verified Google and Bing positions per keyword, Search Console clicks and impressions when connected, and whether Google's AI Overview showed and cited the page. `--scope ours\|site`. |
-| `queries` | List the tracked queries, each with how many of the 6 AI engines cited it in their latest check. `--csv` prints CSV instead of JSON. |
+| `queries` | List the tracked queries, each with how many of the AI engines that answered it cited it in their latest check; `noAnswer` names an engine with no answer (Google shows an AI Overview for some questions only). `branded` marks a question that names your brand, which doesn't count toward your score. `--topic <topic>`, `--engines <ids>`. `--csv` prints CSV instead of JSON. |
 | `query-slots` | Tracking slots in use and the plan's limit. |
 | `query-add <queryText>` | Add a query to the pool. `--covered-by <contentId>` when an existing article already answers it, so Plan Content does not offer it again. |
 | `query-edit <queryId> <text>` | Rewrite a tracked query; future checks use the new text. |
 | `query-track <queryId> <on\|off>` | Pause or resume weekly checks; tracking consumes a plan slot. |
 | `query-remove <queryId>` | Delete a query from the pool. |
-| `competitors` | Tracked competitors with visibility score, 30-day citations of checks, 30-day win rate, domain metrics and positioning analysis. |
+| `competitors` | Tracked competitors with their other names and sites, visibility score, 30-day citations of checks, 30-day win rate, domain metrics and positioning analysis. `--topic <topic>`, `--engines <ids>`. |
 | `web-totals` | Monthly web total for your domain and every competitor you track, last 3 months, oldest month first. |
 | `footprint` | Web footprint (0-10) for your domain and every competitor you track, with the median peer. |
 | `competitor-add <name> [url]` | Track a competitor (max 10). The site is resolved from the name when the URL is omitted. |
+| `competitor-edit <competitorId>` | Set a tracked competitor's other names and sites: `--aliases` and `--sites`, comma-separated, each replacing its list. Removing one waits for the owner's approval in RankControl. |
 | `competitor-remove <competitorId>` | Stop tracking a competitor (waits for the owner's approval in RankControl). |
 | `crawler-access` | Is the site's edge or robots.txt blocking GPTBot and ClaudeBot. |
+
+`--topic` takes a topic's id or name from `topics`, or `none` for the questions with no topic.
+`--engines` takes engine ids, comma-separated (`chatgpt,claude`), and counts only those engines' answers.
 
 ### Content
 
@@ -159,10 +163,11 @@ separate field, not a status. `content` returns a bare JSON array.
 | `article-set <contentId>` | Change a planned article's length, tone, image style or instructions. |
 | `delete-planned <contentId>` | Remove a planned title; its search stays saved for Plan Content. |
 | `archive <contentId>` | Archive an article out of the working set. |
-| `topics` | The pillar list (topic clusters) searches and articles group under. |
+| `topics` | The pillar list (topic clusters) searches and articles group under, each with how many tracked questions it holds. |
 | `topics-set <topics...>` | Replace the FULL pillar list; read `topics` first and send every topic that should exist. Up to 20 topics. |
 | `optimizer` | Published pages ranked by citability, worst first, with open fixes. |
 | `internal-links <contentId>` | Inbound and outbound internal links for an article. |
+| `impact <contentId>` | An article's questions in AI answers: the 4 weeks before it went live against every answer since. |
 
 ### Article policy
 
@@ -234,10 +239,17 @@ separate field, not a status. `content` returns a bare JSON array.
 | `icp-suggest` | Suggest up to 8 audiences for this site from its brand, products, competitors and topics. Saves nothing. `--exclude <titles...>` for different ones. |
 | `icp-draft` | Draft one buyer profile to review: `--describe <sentence>`, or `--title` and `--who` from a suggestion; `--json` keeps the fields you pass and fills the rest. Saves nothing; save it with `brand-icp`. |
 | `brand-reviewed` | Mark the brand as reviewed (Expedition I). |
+| `objections` | The objections AI raises about you, with how many answers raised each and the engines (Buyer Profiles' suggestions). |
+| `objection-add <suggestionId> <profileId>` | Add one to a buyer profile: first in its objections. `--text` saves it in your own words. |
+| `objection-dismiss <suggestionId>` | Dismiss one; it isn't suggested again. Waits for the owner. |
 | `guideline-add <type> <avoid> <instead>` | Add a brand guideline. |
 | `guideline-on <id>` | Turn a brand guideline on. |
 | `guideline-off <id>` | Turn a brand guideline off. |
 | `guideline-remove <id>` | Delete a brand guideline. |
+| `facts` | The facts AI's answers are checked against, and the contradictions of the last 30 days. |
+| `fact-add <type> <text>` | Add a fact. Types: price, plan, integration, guarantee, other. |
+| `fact-edit <id>` | Edit a fact. `--text`, `--type`. |
+| `fact-delete <id>` | Delete a fact (waits for the owner). |
 
 ### Team
 
