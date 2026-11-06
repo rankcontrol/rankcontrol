@@ -211,9 +211,6 @@ separate field, not a status. `content` returns a bare JSON array.
 | `outreach-status <backlinkId> <status>` | Move a prospect: `identified`, `contacted`, `replied`, `link_placed`, `rejected`. |
 | `outreach-ai-source-product <backlinkId> <productId>` | Change the product or service an AI source offers, until its pitch is queued (product ids from `brand`). |
 | `outreach-cancel <backlinkId>` | Cancel a queued outreach email (first email, reply or follow-up) before it sends. |
-| `editorial-circle` | Editorial Circle credits, membership state, and placements. |
-| `editorial-circle-opt-in <on\|off>` | Join or leave the Editorial Circle. **Dry run**; leaving retires live links. |
-| `editorial-circle-remove-placement <id>` | Retire one placement. **Dry run**; visible on the partner site. |
 
 ### Social
 
@@ -280,7 +277,7 @@ Setup-time commands; most workspaces touch these once.
 | Command | What it does |
 | --- | --- |
 | `support <subject>` | Message the RankControl team. `--message <text>` required, `--page <url>` optional. Capped 3/min. |
-| `help-page [page]` | Read a help page: setup guides for each publishing destination, the crawler and its IP, the API, CLI and MCP, and the plan and pricing; without a page, list the pages. |
+| `help-page [page]` | Read a help page: setup guides for each publishing destination, the crawler and our IP, the API, CLI and MCP, and the plan and pricing; without a page, list the pages. |
 | `guides <question>` | Search the guides on RankControl's blog about SEO and AI search; prints the sections that best answer the question, each with its guide's link. |
 | `billing` | Billing as Settings, Billing shows it: status, billing cycle, next charge, add-ons, usage and recent payments (read-only). |
 
