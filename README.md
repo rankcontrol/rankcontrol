@@ -41,4 +41,5 @@ by default and require `--confirm`. Approval gates run server-side.
 - Docs: [rctrl.com/docs](https://rctrl.com/docs)
 - npm: [rankcontrol](https://www.npmjs.com/package/rankcontrol) (CLI + MCP server in one package)
 - X: [@rctrlcom](https://x.com/rctrlcom)
+- Search Shift (our research notes on what AI search cites): [rankcontrol.github.io](https://rankcontrol.github.io), [Medium](https://medium.com/@thesearchshift), [Substack](https://thesearchshift.substack.com)
 - Support: [rctrl.com/contact](https://rctrl.com/contact)
