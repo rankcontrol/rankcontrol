@@ -2,7 +2,6 @@
 name: rankcontrol
 description: Operate the user's RankControl workspace (rctrl.com) from the command line - AI search visibility and citations (ChatGPT, Perplexity, Claude, Gemini, Grok, Google AI Mode, Google AI Overviews), SEO content planning, article generation and publishing to their CMS, backlinks and outreach, social repurposing, brand memory, and reports. Use this whenever the user asks about AI visibility, AI citations, GEO/AEO, being cited by ChatGPT, their content calendar, publishing articles, AI traffic attribution, or anything in their RankControl account, even if they don't name RankControl explicitly.
 homepage: https://rctrl.com/docs
-metadata: {"openclaw":{"emoji":"📈","requires":{"bins":[],"env":[]}}}
 ---
 
 # RankControl CLI
