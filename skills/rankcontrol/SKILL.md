@@ -98,11 +98,18 @@ rankcontrol visibility --days 30            # watch the trend
 | Command | What it does |
 | --- | --- |
 | `funnel` | AI pipeline, last 30 days: crawler hits, AI-referred visits. |
+| `question-movers` | Tracked queries whose citation rate moved most this week. |
 | `report` | Executive summary: last 30 days vs the 30 before. |
 | `wins` | Biggest wins: most-cited page, cite-rate jump, ranking climb, best new backlink (spam left out). |
 | `agent-activity` | Recent runs per agent lane. `--per-agent <n>`, `--since-days <n>`. |
 | `jobs` | Recent agent runs and async job status. `--limit <n>`. |
-| `traffic` | Page views, visitors, sessions, bounce rate. `--days <n>`. `--scope site`: the whole site from Google Analytics (visits, from search, from AI, top pages, AI key events and revenue), when connected. |
+| `traffic` | Page views, visitors, sessions, bounce rate, scroll depth, change from the period before. `--days <n>`. `--scope site`: the whole site from Google Analytics (visits, from search, from AI, top pages, AI key events and revenue), when connected. |
+| `traffic-trend` | Visits to your articles over time. `--days 7\|30\|90`. |
+| `traffic-pages` | Visits to each of your articles. `--days 7\|30\|90`. |
+| `traffic-sources` | Where visits to your articles came from. `--days 7\|30\|90`. |
+| `search-console` | Search Console totals and daily clicks and impressions. `--days 7\|30\|90`. |
+| `search-console-queries` | Top Search Console searches by clicks. `--days 7\|30\|90`. |
+| `search-console-trend` | Search Console clicks and impressions by day. `--days 7\|30\|90`. |
 | `ai-crawling` | AI crawler visits: the total, each crawler's visits with the busiest first, and each day's visits per crawler. `--days 7\|30\|90`. |
 | `engagement` | Per-page views and citations with 30-day sparklines. |
 
@@ -110,18 +117,19 @@ rankcontrol visibility --days 30            # watch the trend
 
 | Command | What it does |
 | --- | --- |
-| `score` | Composite visibility score with per-pillar subscores. `--topic <topic>`, `--engines <ids>`. |
+| `score` | Composite visibility score with per-pillar subscores; `lastChecked` is the newest check's day when it is over 8 days old. `--topic <topic>`, `--engines <ids>`. |
 | `expedition` | The workspace's expeditions on the Overview: the current expedition, each step's name and whether it is done, and the next step. |
 | `visibility` | Daily AI visibility trend. `--days 30\|60\|90`, `--topic <topic>`, `--engines <ids>`. |
 | `sov` | Share of voice vs competitors. `--days <n>`, `--topic <topic>`, `--engines <ids>`. |
-| `sources` | Domains AI answers cite for tracked queries. `--days <n>`, `--topic <topic>`, `--engines <ids>`. `--pages` lists the cited pages instead, each with its type and its answers this 30 days and the 30 before. |
+| `sources` | Domains AI answers cite for tracked queries. `--days <n>`, `--topic <topic>`, `--engines <ids>`. `--pages` lists the cited pages instead, each with its type and its answers in the last 4 weekly checks and the 4 before. |
 | `sentiment` | How AI answers frame the brand when cited. `--days <n>`, `--topic <topic>`, `--engines <ids>`. |
 | `citations` | Recent citation checks; `branded` marks one whose question names your brand. `contradiction` marks one whose answer contradicts one of your facts. `--model chatgpt\|perplexity\|claude\|gemini\|grok\|google_ai_mode\|google_ai_overview`, `--limit <n>`, `--topic <topic>`, `--engines <ids>`. `--csv` prints CSV instead of JSON. |
 | `rankings` | Verified Google and Bing positions per keyword, Search Console clicks and impressions when connected, and whether Google's AI Overview showed and cited the page. `--scope ours\|site`. |
+| `movers` | Biggest Google position changes in the last 30 days. `--scope ours\|site`. |
 | `queries` | List the tracked queries, each with how many of the AI engines that answered it cited it in their latest check; `noAnswer` names an engine with no answer (Google shows an AI Overview for some questions only). `branded` marks a question that names your brand, which doesn't count toward your score. `--topic <topic>`, `--engines <ids>`. `--csv` prints CSV instead of JSON. |
 | `query-slots` | Tracking slots in use and the plan's limit. |
 | `query-add <queryText>` | Add a query to the pool. `--covered-by <contentId>` when an existing article already answers it, so Plan Content does not offer it again. |
-| `query-edit <queryId> <text>` | Rewrite a tracked query; future checks use the new text. |
+| `query-edit <queryId> <text>` | Edit a tracked query. A spelling fix keeps its history. Any other change starts a new query in the same slot and waits for the owner's approval. |
 | `query-track <queryId> <on\|off>` | Pause or resume weekly checks; tracking consumes a plan slot. |
 | `query-remove <queryId>` | Delete a query from the pool. |
 | `competitors` | Tracked competitors with their other names and sites, visibility score, 30-day citations of checks, 30-day win rate, domain metrics and positioning analysis. `--topic <topic>`, `--engines <ids>`. |
@@ -174,7 +182,7 @@ separate field, not a status. `content` returns a bare JSON array.
 | Command | What it does |
 | --- | --- |
 | `settings` | Show the article policy: per-article defaults plus scheduling mode. |
-| `settings-set` | Merge-patch the policy; only flags you pass change. Flags: `--auto-publish on\|off`, `--auto-generate on\|off`, `--images on\|off`, `--title-in-hero on\|off`, `--section-infographics on\|off`, `--related-reading on\|off`, `--youtube on\|off`, `--emojis on\|off`, `--internal-links <n>`, `--external-links <n>`, `--instructions <text>`, `--flexible-schedule on\|off`, `--image-style <style>`. |
+| `settings-set` | Merge-patch the policy; only flags you pass change. Flags: `--auto-publish on\|off`, `--auto-generate on\|off`, `--images on\|off`, `--title-in-hero on\|off`, `--section-infographics on\|off`, `--related-reading on\|off`, `--youtube on\|off`, `--emojis on\|off`, `--internal-links <n>`, `--external-links <n>`, `--instructions <text>`, `--flexible-schedule on\|off`, `--image-style <style>`, `--formats <list>` (article formats turned on, comma-separated; replaces the current list), `--confirm` (needed to turn on news or trending). |
 
 ### Site links
 
@@ -203,10 +211,11 @@ separate field, not a status. `content` returns a bare JSON array.
 | --- | --- |
 | `backlinks` | The backlink table, newest first, with each linking site's Domain Rating and spam verdict. `--status <status>`. |
 | `backlink-stats` | Totals plus outreach pipeline counts, with the hidden spam counted apart and the last 12 weekly checks. |
-| `outreach-prospects` | Prospect sites per published article, with Domain Rating (`dr`, `drSource`: whether the rating is measured or estimated), found contacts, and each prospect's next step (`nextMove`) and stage. `--ai-sources`: only AI sources, pages AI engines cite for your tracked questions, each with the product or service it offers (needs one in Brand Control). |
+| `outreach-prospects` | Prospect sites per published article, with Domain Rating (`dr`, `drSource`: whether the rating is measured or estimated), found contacts, and each prospect's next step (`nextMove`) and stage. `--ai-sources`: only AI sources, pages AI engines cite for your tracked questions, each with the product or service it offers (needs one in Brand Kit). |
 | `outreach-stats` | Outreach funnel for the last 90 days by how each prospect was found: prospects, sent, replied, placed, with reply and placement rates per send. |
 | `outreach-find-contact <backlinkId>` | Find a contact email for a prospect. |
 | `outreach-draft-reply <backlinkId>` | AI-draft a reply to an inbound response. Nothing sends. |
+| `outreach-draft-email <backlinkId>` | Draft the first email to a prospect. Nothing sends. |
 | `outreach-queue <backlinkId>` | Queue an outreach email. **Dry run**; `--subject`, `--body`. |
 | `outreach-status <backlinkId> <status>` | Move a prospect: `identified`, `contacted`, `replied`, `link_placed`, `rejected`. |
 | `outreach-ai-source-product <backlinkId> <productId>` | Change the product or service an AI source offers, until its pitch is queued (product ids from `brand`). |
@@ -216,7 +225,7 @@ separate field, not a status. `content` returns a bare JSON array.
 
 | Command | What it does |
 | --- | --- |
-| `social` | Thread prospects (Reddit/X) with rules context, each thread's next step (`nextMove`) and stage. `--platform`, `--status`, `--stage`, `--age ranked\|new`, `--ai-sources` for only the threads AI engines cite for your tracked questions (needs a product or service in Brand Control). |
+| `social` | Thread prospects (Reddit/X) with rules context, each thread's next step (`nextMove`) and stage. `--platform`, `--status`, `--stage`, `--age ranked\|new`, `--ai-sources` for only the threads AI engines cite for your tracked questions (needs a product or service in Brand Kit). |
 | `social-stats` | Thread pipeline counts. |
 | `social-status <threadId> skipped` | Skip a thread. The only manual status; Posted is detected automatically. |
 | `social-draft-reply <threadId>` | AI-draft a reply for review. `--mention none\|natural\|founderOpen`. Nothing posts. |
@@ -228,7 +237,7 @@ separate field, not a status. `content` returns a bare JSON array.
 
 | Command | What it does |
 | --- | --- |
-| `brand` | Brand profile, products, buyer profiles (ICPs) and brand guidelines in one read. |
+| `brand` | Brand profile, products, buyer profiles and brand guidelines in one read. |
 | `brand-set` | Update identity: `--name`, `--industry`, `--description`, `--aliases` (other spellings searched as brand mentions, comma-separated), `--not-us` (same-name brands to skip), or `--json` for authors (EEAT bylines) and styleReferenceUrls. Arrays replace the stored list; a name change runs the mention search once a day at most. |
 | `brand-profile-set` | Patch voice and style fields, and the Local business switch (`localBusiness`, `serviceArea`). `--json '{"tone":"..."}'` or `--json @file.json`. |
 | `brand-product` | Create, update, or delete a product via `--json` (create: name, description, category; update: productId; delete: productId plus `"del": true`). |
