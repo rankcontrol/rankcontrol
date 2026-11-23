@@ -60,6 +60,8 @@ scope is missing rather than retrying.
    workspace: prospect replies, AI answers, social threads, competitor
    pages. These answer `approval_required` with an `approveUrl`: give the
    user the link, and the workspace owner approves it in RankControl.
+   Recording a reply the user posted (`social-posted`) or a contact form
+   they sent (`outreach-form-sent`) never waits.
    `rankcontrol approval <approvalId>` shows where it stands.
 6. **Sanity-check surprising data before alarming anyone.** A score that
    drops to zero overnight, or long runs of checks with empty responses, can
@@ -175,6 +177,7 @@ separate field, not a status. `content` returns a bare JSON array.
 | `optimizer` | Published pages ranked by citability, worst first, with open fixes. |
 | `internal-links <contentId>` | Inbound and outbound internal links for an article. |
 | `impact <contentId>` | An article's questions in AI answers: the 4 weeks before it went live against every answer since. |
+| `content-by-url <url>` | Your published article at this address, with the citability score the dashboard shows for it (null when it isn't one of yours). |
 
 ### Article policy
 
@@ -199,7 +202,7 @@ separate field, not a status. `content` returns a bare JSON array.
 | --- | --- |
 | `repurpose [contentId]` | The repurpose queue, or full drafts for one article. |
 | `repurpose-generate <contentId>` | Draft social posts. **Dry run**. |
-| `repurpose-edit <draftId>` | Edit a draft. `--body`, `--title`. |
+| `repurpose-edit <draftId>` | Edit a draft. `--body`, `--title`, `--images <urls...>` (the draft's images, in order; leaving one out waits for the owner). |
 | `repurpose-channels` | Connected Postiz and Buffer channels and their ids. |
 | `repurpose-push <draftId>` | Send to Postiz or Buffer. **Dry run**; `--channels id1,id2`, `--when now\|schedule\|draft\|queue` (queue is Buffer only), `--date <iso>`, `--scheduler postiz\|buffer` when both are connected. |
 | `repurpose-mark-posted <draftId>` | Mark a draft posted when published manually. |
@@ -215,6 +218,8 @@ separate field, not a status. `content` returns a bare JSON array.
 | `outreach-find-contact <backlinkId>` | Find a contact email for a prospect. |
 | `outreach-draft-reply <backlinkId>` | AI-draft a reply to an inbound response. Nothing sends. |
 | `outreach-draft-email <backlinkId>` | Draft the first email to a prospect. Nothing sends. |
+| `outreach-form-fill <prospectId>` | What to type into a prospect's contact form when no email was found: name, email, subject and message. The follow-up once it opens. Nothing sends. |
+| `outreach-form-sent <prospectId> <pageUrl>` | Record a message you sent through a prospect's contact form. The first one moves it to Contacted. **Dry run**; `--confirm`. |
 | `outreach-queue <backlinkId>` | Queue an outreach email. **Dry run**; `--subject`, `--body`. |
 | `outreach-status <backlinkId> <status>` | Move a prospect: `identified`, `contacted`, `replied`, `link_placed`, `rejected`. |
 | `outreach-ai-source-product <backlinkId> <productId>` | Change the product or service an AI source offers, until its pitch is queued (product ids from `brand`). |
@@ -229,6 +234,7 @@ separate field, not a status. `content` returns a bare JSON array.
 | `social-status <threadId> skipped` | Skip a thread. The only manual status; Posted is detected automatically. |
 | `social-draft-reply <threadId>` | AI-draft a reply for review. `--mention none\|natural\|founderOpen`. Nothing posts. |
 | `social-open <threadId>` | Take the draft to the platform yourself: prints the thread URL (X: a composer link with the reply filled in) and starts the checks that mark it Posted. `--text` for an edited reply (X: 280 characters or fewer). |
+| `social-posted <threadId> <permalink>` | Record the reply you posted on a thread you opened (`social-open`) by its link; the thread moves to Posted. `--text` for the reply as posted. **Dry run**; `--confirm`. |
 | `social-x-handle <handle\|clear>` | Optional X handle used to recognise your posted replies. |
 | `social-reddit-profile` | Save the Reddit account the Social tab drafts for: `--karma`, `--age`, `--goal`, `--story`, `--tone`, optional `--username`. Replaces the stored profile. |
 
