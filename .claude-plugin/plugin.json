@@ -1,7 +1,7 @@
 {
   "name": "rankcontrol",
   "version": "0.33.1",
-  "description": "AI SEO agent for Google and AI search. Research the keywords and questions your buyers search, plan a content calendar, write SEO blog posts in your brand's voice and publish them to WordPress, Webflow, Shopify and other CMSs. Track your AI visibility (GEO and AEO), Google rankings and backlinks, and run link-building outreach. Works in Claude and Claude Code.",
+  "description": "AI SEO agent for Google and AI search. Research the keywords and questions your buyers search, plan a content calendar, write SEO blog posts in your brand's voice and publish them to WordPress, Webflow, Shopify and other CMSs. Track your AI visibility (GEO and AEO), Google rankings and backlinks, and run link-building outreach from your own mailbox: the first email tells each site owner they can reply to opt out, and a no ends the follow-ups. Works in Claude and Claude Code.",
   "icon": "icon.png",
   "author": {
     "name": "RankControl",

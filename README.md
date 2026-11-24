@@ -24,16 +24,10 @@ Any skills-compatible agent:
 npx skills add rankcontrol/rankcontrol
 ```
 
-Prefer MCP tools? Local stdio via the same npm package, or the remote
-connector with OAuth:
-
-```bash
-claude mcp add rankcontrol -- npx rankcontrol mcp
-claude mcp add --transport http rankcontrol https://api.rctrl.com/mcp
-```
-
 Safety: publishing, outreach, and other publicly visible actions are dry-run
 by default and require `--confirm`. Approval gates run server-side.
+The first outreach email tells the recipient they can reply to opt out, and a
+no ends the follow-ups.
 
 ## Links
 

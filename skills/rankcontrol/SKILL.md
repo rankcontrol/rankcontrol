@@ -1,6 +1,6 @@
 ---
 name: rankcontrol
-description: Operate the user's RankControl workspace (rctrl.com) from Claude or the command line - AI search visibility and citations (ChatGPT, Perplexity, Claude, Gemini, Grok, Google AI Mode, Google AI Overviews), SEO content planning, article generation and publishing to their CMS, backlinks and outreach, social repurposing, brand memory, and reports. Use this whenever the user asks about AI visibility, AI citations, GEO/AEO, being cited by ChatGPT, their content calendar, publishing articles, AI traffic attribution, or anything in their RankControl account, even if they don't name RankControl explicitly.
+description: Operate the user's RankControl workspace (rctrl.com) from the command line - AI search visibility and citations (ChatGPT, Perplexity, Claude, Gemini, Grok, Google AI Mode, Google AI Overviews), SEO content planning, article generation and publishing to their CMS, backlinks and outreach, social repurposing, brand memory, and reports. Use this whenever the user asks about AI visibility, AI citations, GEO/AEO, being cited by ChatGPT, their content calendar, publishing articles, AI traffic attribution, or anything in their RankControl account, even if they don't name RankControl explicitly.
 homepage: https://rctrl.com/docs
 ---
 
@@ -13,17 +13,6 @@ search engines. The `rankcontrol` CLI is the whole workspace in the terminal.
 Every command prints JSON.
 
 Full reference: https://rctrl.com/docs (also https://rctrl.com/docs/llms.txt)
-
-## In Claude apps: use the connector
-
-When RankControl's tools are connected in Claude (add the custom connector
-`https://api.rctrl.com/mcp`, steps at https://rctrl.com/docs/mcp), use them
-instead of the CLI: the commands below have tools with the same jobs, and the
-ground rules hold the same way. A tool that changes something answers with a
-preview until it is called with `confirm: true`, and a removal or team change
-returns an approval link for the workspace owner. If there are no RankControl
-tools and no terminal, ask the user to add the connector and sign in with
-their RankControl account.
 
 ## Install and authenticate
 
@@ -219,6 +208,12 @@ separate field, not a status. `content` returns a bare JSON array.
 | `repurpose-mark-posted <draftId>` | Mark a draft posted when published manually. |
 
 ### Link building
+
+Outreach emails go from the user's own mailbox. The first email tells the
+recipient they can reply to opt out. Any reply stops the follow-ups, and a
+reply that says no blocks that person and site from the mailbox. Never queue
+an email to someone who asked not to be contacted. Anyone can ask RankControl
+to remove their address at https://rctrl.com/contact.
 
 | Command | What it does |
 | --- | --- |
