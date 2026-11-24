@@ -8,6 +8,7 @@
     "url": "https://rctrl.com"
   },
   "homepage": "https://rctrl.com/docs/mcp",
+  "privacyPolicyUrl": "https://rctrl.com/privacy",
   "repository": "https://github.com/rankcontrol/rankcontrol",
   "license": "MIT",
   "keywords": [

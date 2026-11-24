@@ -16,15 +16,14 @@ Full reference: https://rctrl.com/docs (also https://rctrl.com/docs/llms.txt)
 
 ## In Claude apps: use the connector
 
-In Claude apps this plugin brings the RankControl connector. When its tools
-are available (`get_visibility_score`, `list_content`, `plan_content` and the
-rest), use them instead of the CLI: the commands below have tools with the
-same jobs, and the ground rules hold the same way. A tool that changes
-something answers with a preview until it is called with `confirm: true`, and
-a removal or team change returns an approval link for the workspace owner.
-If there are no RankControl tools and no terminal, ask the user to connect
-RankControl in the plugin's Connectors tab and sign in with their RankControl
-account.
+When RankControl's tools are connected in Claude (add the custom connector
+`https://api.rctrl.com/mcp`, steps at https://rctrl.com/docs/mcp), use them
+instead of the CLI: the commands below have tools with the same jobs, and the
+ground rules hold the same way. A tool that changes something answers with a
+preview until it is called with `confirm: true`, and a removal or team change
+returns an approval link for the workspace owner. If there are no RankControl
+tools and no terminal, ask the user to add the connector and sign in with
+their RankControl account.
 
 ## Install and authenticate
 
