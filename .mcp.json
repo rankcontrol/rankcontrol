@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "rankcontrol": {
+      "type": "http",
+      "url": "https://api.rctrl.com/mcp"
+    }
+  }
+}

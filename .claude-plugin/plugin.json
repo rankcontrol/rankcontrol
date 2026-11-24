@@ -1,7 +1,7 @@
 {
   "name": "rankcontrol",
   "version": "0.33.1",
-  "description": "The agentic SEO suite for Google and AI search. Plan content, generate and publish articles to your CMS, and track AI citations, rankings, and backlinks from the command line.",
+  "description": "AI SEO agent for Google and AI search. Research the keywords and questions your buyers search, plan a content calendar, write SEO blog posts in your brand's voice and publish them to WordPress, Webflow, Shopify and other CMSs. Track your AI visibility (GEO and AEO), Google rankings and backlinks, and run link-building outreach. Works in Claude and Claude Code.",
   "icon": "icon.png",
   "author": {
     "name": "RankControl",
@@ -12,11 +12,20 @@
   "license": "MIT",
   "keywords": [
     "seo",
+    "ai-seo",
+    "seo-agent",
     "geo",
     "aeo",
+    "ai-visibility",
     "ai-search",
-    "citations",
-    "content",
-    "backlinks"
+    "keyword-research",
+    "content-marketing",
+    "content-calendar",
+    "blog",
+    "wordpress",
+    "rank-tracking",
+    "backlinks",
+    "link-building",
+    "outreach"
   ]
 }

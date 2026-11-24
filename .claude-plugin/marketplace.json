@@ -10,11 +10,11 @@
   "plugins": [
     {
       "name": "rankcontrol",
-      "description": "The agentic SEO suite for Google and AI search. Teaches Claude the rankcontrol CLI: check AI visibility and citations, plan and publish content to your CMS, track rankings and backlinks.",
+      "description": "AI SEO agent for Google and AI search. Research the keywords and questions your buyers search, plan a content calendar, write SEO blog posts in your brand's voice and publish them to WordPress, Webflow, Shopify and other CMSs. Track your AI visibility (GEO and AEO), Google rankings and backlinks, and run link-building outreach. Works in Claude and Claude Code.",
       "author": { "name": "RankControl", "url": "https://rctrl.com" },
       "homepage": "https://rctrl.com/docs/mcp",
       "category": "productivity",
-      "keywords": ["seo", "geo", "aeo", "ai-search", "citations", "content", "backlinks"],
+      "keywords": ["seo", "ai-seo", "seo-agent", "geo", "aeo", "ai-visibility", "ai-search", "keyword-research", "content-marketing", "content-calendar", "blog", "wordpress", "rank-tracking", "backlinks", "link-building", "outreach"],
       "source": { "source": "url", "url": "https://github.com/rankcontrol/rankcontrol.git" }
     }
   ]
